@@ -1,6 +1,11 @@
 # Summary
 
-* [python数据结构与算法简介](README.md)
+* [数据结构与算法（Python）](README.md)
+* [1 引入概念](chapter0/README.md)
+    * [第一次尝试](chapter0/section1.md)
+    * [算法的提出](chapter0/section2.md)
+    * [第二次尝试](chapter0/section3.md)
+    * [算法效率衡量](chapter0/section4.md)
 * [常用数据类型与算法效率分析](chapter1/README.md)
     * [抽象数据类型](chapter1/section1.md)
     * [算法效率衡量](chapter1/section2.md)
@@ -27,4 +32,3 @@
 * [树与树算法](chapter6/README.md)
     * [二叉树](chapter6/section1.md)
     * [二叉树的遍历](chapter6/section2.md)
-
