@@ -1,18 +1,24 @@
-# 队列的实现
+# 栈结构实现
+
 ```
-class Queue:
-    def __init__(self):
-        self.items = []
+class Stack:
+     def __init__(self):
+         self.items = []
 
-    def isEmpty(self):
-        return self.items == []
+     def isEmpty(self):
+         return self.items == []
 
-    def enqueue(self, item):
-        self.items.insert(0,item)
+     def push(self, item):
+         self.items.append(item)
 
-    def dequeue(self):
-        return self.items.pop()
+     def pop(self):
+         return self.items.pop()
 
-    def size(self):
-        return len(self.items)
+     def peek(self):
+         return self.items[len(self.items)-1]
+
+     def size(self):
+         return len(self.items)
 ```
+执行过程如下：
+![stack演示](/images/stack演示.gif)

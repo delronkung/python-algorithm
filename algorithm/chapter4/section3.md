@@ -1,170 +1,34 @@
-# 双向链表
-一种更复杂的链表是“双向链表”或“双面链表”。每个节点有两个连接：一个指向前一个节点，（当此“连接”为第一个“连接”时，指向空值或者空列表）；而另一个指向下一个节点，（当此“连接”为最后一个“连接”时，指向空值或者空列表）
-##操作
-isEmpty() 链表是否为空  
-size() 链表长度  
-add() 链表头部添加  
-append()  链表尾部添加  
-insert() 中间位置添加  
-remove() 删除节点   
-search() 查找节点是否存在  
-index() 求出指定节点的位置
-##实现
+# 双端队列
+###操作
+* Deque() 创建一个空的双端队列
+* addFront(item) 从队头加入一个item元素
+* addRear(item) 从队尾加入一个item元素
+* removeFront() 从队头删除一个item元素
+* removeRear() 从队尾删除一个item元素
+* isEmpty() 判断双端队列是否为空
+* size() 返回队列的大小
 ```
-class Node(object):
-    def __init__(self,val,p=0):
-        self.data = val
-        self.next = p
-        self.prev = p
-
-class LinkList(object):
+class Deque:
     def __init__(self):
-        self.head = 0
-    #获取指定位置的值
-    def __getitem__(self, key):
-        if self.isEmpty():
-            print 'linklist is empty.'
-            return
-        elif key <0  or key > self.getlength():
-            print 'the given key is error'
-            return
-        else:
-            return self.getitem(key)
-
-    def __setitem__(self, key, value):
-        if self.isEmpty():
-            print 'linklist is empty.'
-            return
-        elif key <0  or key > self.getlength():
-            print 'the given key is error'
-            return
-        else:
-            self.delete(key)
-            return self.insert(key)
-
-    #初始化一个链表，并循环用data里的元素的值赋给链表
-    def initlist(self,data):
-        self.head = Node(data[0])
-        p = self.head
-        for i in data[1:]:
-            node = Node(i)
-            p.next = node
-            node.prev  = p
-            p = p.next
-
-    #获取链表长度
-    def getlength(self):
-        p =  self.head
-        length = 0
-        while p!=0:
-            length+=1
-            p = p.next
-        return length
-
+        self.items = []
 
     def isEmpty(self):
-        if self.getlength() ==0:
-            return True
-        else:
-            return False
+        return self.items == []
 
-    #清空链表
-    def clear(self):
-        self.head = 0
+    def addFront(self, item):
+        self.items.append(item)
 
-    #在尾部添加节点
-    def append(self,item):
-        q = Node(item)
-        if self.head ==0:
-            self.head = q
-        else:
-            p = self.head
-            while p.next!=0:
-                p = p.next
-            p.next = q
-            q.prev = p
+    def addRear(self, item):
+        self.items.insert(0,item)
 
-    def getitem(self,index):
-        if self.isEmpty():
-            print 'Linklist is empty.'
-            return
-        j = 0
-        p = self.head
-        while p.next!=0 and j <index:
-            p = p.next
-            j+=1
-        if j ==index:
-            return p.data
-        else:
-            print 'target is not exist!'
+    def removeFront(self):
+        return self.items.pop()
 
-    def insert(self,index,item):
-        if self.isEmpty() or index<0 or index >self.getlength():
-            print 'Linklist is empty.'
-            return
-        if index ==0:
-            q = Node(item,self.head)
-            self.head = q
-        p = self.head
-        post  = self.head
-        j = 0
-        while p.next!=0 and j<index:
-            post = p
-            p = p.next
-            j+=1
-        if index ==j:
-            q = Node(item,p)
-            post.next = q
-            q.prev = post
-            q.next = p
-            p.prev = q
+    def removeRear(self):
+        return self.items.pop(0)
 
-    def remove(self,index):
-        if self.isEmpty() or index<0 or index >self.getlength():
-            print 'Linklist is empty.'
-            return
-        if index ==0:
-            q = Node(item,self.head)
-            self.head = q
-        p = self.head
-        post  = self.head
-        j = 0
-        while p.next!=0 and j<index:
-            post = p
-            p = p.next
-            j+=1
-        if index ==j:
-            post.next = p.next
-            p.next.prev = post
-
-    def index(self,value):
-        if self.isEmpty():
-            print 'Linklist is empty.'
-            return
-        p = self.head
-        i = 0
-        while p.next!=0 and not p.data ==value:
-            p = p.next
-            i+=1
-        if p.data == value:
-            return i
-        else:
-            return -1
-
-if __name__=="__main__":
-    l = LinkList()
-    l.initlist([1,2,3,4,5])
-    print l.getitem(4)
-    l.append(6)
-    print l.getitem(5)
-
-    l.insert(4,40)
-    print l.getitem(3)
-    print l.getitem(4)
-    print l.getitem(5)
-
-    l.delete(5)
-    print l.getitem(5)
-
-    l.index(5)
+    def size(self):
+        return len(self.items)
 ```
+###双端队列应用
+一个有趣的问题，可以很容易地解决了使用队列的数据结构是典型的回文问题。回文数是一个字符串，读取相同的向前和向后的，例如,"sbbs"我们想构造一个算法，输入一个字符串是否回文。这个问题的解决方案将使用一个队列来存储字符串的字符。我们将从左到右弦和添加的每个字符的双端队列后。在这一点上，deque将会表现的非常像一个普通的队列。然而，我们现在可以利用该容器的双重功能。该容器前将字符串和该容器后的第一个字符将举行的最后一个字符

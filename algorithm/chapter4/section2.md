@@ -1,69 +1,13 @@
-# 单项循环链表
-在一个 循环链表中, 首节点和末节点被连接在一起。这种方式在单向和双向链表中皆可实现。要转换一个循环链表，你开始于任意一个节点然后沿着列表的任一方向直到返回开始的节点。再来看另一种方法，循环链表可以被视为“无头无尾”,可以解决约瑟夫问题
-##操作
-add() 添加一个节点
-remove()  删除一个节点
-search()  查找节点是否存在
-size()  返回链表的长度
-empty() 判断链表是否为空
-##实现
-```
-class Node:
-    def __init__(self, initdata):
-        self.__data = initdata
-        self.__next = None
-    def getData(self):
-        return self.__data
-    def getNext(self):
-        return self.__next
-    def setData(self, newdata):
-        self.__data = newdata
-    def setNext(self, lnode):
-        self.__next = lnode
+# 队列的应用
+1.windows中的消息机制就是通过队列来实现的  
+2.操作系统的进程、作业管理中的先进先出服务  
+3.异步消息机制，如celery异步任务  
+###约瑟夫斯问题（热土豆游戏）
+这场比赛是一个现代的相当著名的约瑟夫斯问题。基于对第一世纪著名历史学家Flavius Josephus的传说，故事说的是，在对罗马犹太人起义，约瑟夫斯和39名战友顶住了罗马人在一个山洞里。随着失败迫在眉睫，他们决定，他们宁愿死也不愿做罗马人的奴隶。他们安排自己在一个圆圈里。一个人被划为第一号，顺时针方向，每第七个男人就杀了一个。约瑟夫斯，根据传说，是一个有成就的数学家。他立刻想出了他应该坐的地方是最后一个去的地方。当时间来了，而不是杀死自己，他加入了罗马的一边。
 
 
-class SinCycLinkedlist:
-    def __init__(self):
-        self._head = Node(None)
-        #让第一个节点自己指向自己
-        self._head.setNext(self._head)
 
-    #添加一个节点
-    def add(self, item):
-        temp = Node(item)
-        #添加的节点指向_head
-        temp.setNext(self._head.getNext())
-        #_head指向添加的temp节点
-        self._head.setNext(temp)
-
-    #删除一个节点
-    def remove(self, item):
-        prev = self._head
-        while prev.getNext() != self._head:
-            cur = prev.getNext()
-            if cur.getData() == item:
-                prev.setNext(cur.getNext())
-            prev = prev.getNext()
-
-    #查找节点是否存在
-    def search(self, item):
-        cur = self._head.getNext()
-        while cur != self._head:
-            if cur.getData() == item:
-                return True
-            cur = cur.getNext()
-        return False
-
-    #清空链表
-    def empty(self):
-        return self._head.getNext() == self._head
-
-    #求出链表的大小
-    def size(self):
-        count = 0
-        cur = self._head.getNext()
-        while cur != self._head:
-            count += 1
-            cur = cur.getNext()
-        return count
-```
+###打印机任务（拓展不要求会）
+图书馆中有一台打印机，打印机有两种工作模式：每分钟10页（但打印质量较低），每分钟5页（打印效果较好）。打印机一次只能处理一个任务，其余任务可排队等候。
+每个小时最多有10位学生在图书馆，他们在一小时终最多提交2次打印任务，每个打印任务的页数为1至20页不等。
+问：综合分析两种打印模式，分析学生的平均等待打印时间和是否能在1小时内完成所有学生提交的打印任务
