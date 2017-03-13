@@ -1,69 +1,37 @@
-# 单项循环链表
-在一个 循环链表中, 首节点和末节点被连接在一起。这种方式在单向和双向链表中皆可实现。要转换一个循环链表，你开始于任意一个节点然后沿着列表的任一方向直到返回开始的节点。再来看另一种方法，循环链表可以被视为“无头无尾”,可以解决约瑟夫问题
-##操作
-add() 添加一个节点
-remove()  删除一个节点
-search()  查找节点是否存在
-size()  返回链表的长度
-empty() 判断链表是否为空
-##实现
-```
-class Node:
-    def __init__(self, initdata):
-        self.__data = initdata
-        self.__next = None
-    def getData(self):
-        return self.__data
-    def getNext(self):
-        return self.__next
-    def setData(self, newdata):
-        self.__data = newdata
-    def setNext(self, lnode):
-        self.__next = lnode
+# 顺序表的结构与实现
 
+## 顺序表的结构
 
-class SinCycLinkedlist:
-    def __init__(self):
-        self._head = Node(None)
-        #让第一个节点自己指向自己
-        self._head.setNext(self._head)
+<img height=240 src="/images/顺序表的结构.png">
 
-    #添加一个节点
-    def add(self, item):
-        temp = Node(item)
-        #添加的节点指向_head
-        temp.setNext(self._head.getNext())
-        #_head指向添加的temp节点
-        self._head.setNext(temp)
+一个顺序表的完整信息包括两部分，一部分是表中的元素集合，另一部分是为实现正确操作而需记录的信息，即有关表的整体情况的信息，这部分信息主要包括元素存储区的**容量**和当前表中已有的**元素个数**两项。
 
-    #删除一个节点
-    def remove(self, item):
-        prev = self._head
-        while prev.getNext() != self._head:
-            cur = prev.getNext()
-            if cur.getData() == item:
-                prev.setNext(cur.getNext())
-            prev = prev.getNext()
+## 顺序表的两种基本实现方式
 
-    #查找节点是否存在
-    def search(self, item):
-        cur = self._head.getNext()
-        while cur != self._head:
-            if cur.getData() == item:
-                return True
-            cur = cur.getNext()
-        return False
+![顺序表的实现方式](/images/顺序表的实现方式.png)
 
-    #清空链表
-    def empty(self):
-        return self._head.getNext() == self._head
+图a为一体式结构，存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。
 
-    #求出链表的大小
-    def size(self):
-        count = 0
-        cur = self._head.getNext()
-        while cur != self._head:
-            count += 1
-            cur = cur.getNext()
-        return count
-```
+一体式结构整体性强，易于管理。但是由于数据元素存储区域是表对象的一部分，顺序表创建后，元素存储区就固定了。
+
+图b为分离式结构，表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。
+
+## 元素存储区替换
+
+一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象（指存储顺序表的结构信息的区域）改变了。
+
+分离式结构若想更换数据区，只需将表信息区中的数据区链接地址更新即可，而该顺序表对象不变。
+
+## 元素存储区扩充
+
+采用分离式结构的顺序表，若将数据区更换为存储空间更大的区域，则可以在不改变表对象的前提下对其数据存储区进行了扩充，所有使用这个表的地方都不必修改。只要程序的运行环境（计算机系统）还有空闲存储，这种表结构就不会因为满了而导致操作无法进行。人们把采用这种技术实现的顺序表称为动态顺序表，因为其容量可以在使用中动态变化。
+
+**扩充的两种策略**
+
++ 每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长。
+
+    特点：节省空间，但是扩充操作频繁，操作次数多。
+
++ 每次扩充容量加倍，如每次扩充增加一倍存储空间。
+
+    特点：减少了扩充操作的执行次数，但可能会浪费空间资源。以空间换时间，推荐的方式。

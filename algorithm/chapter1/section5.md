@@ -10,7 +10,9 @@ for a in range(0, 1001):
                 print("a, b, c: %d, %d, %d" % (a, b, c))
 ```
 
-T(n) = O(n*n*n) = O(n<sup>3</sup>)
+** 时间复杂度：**
+
+T(n) = O(n\*n\*n) = O(n<sup>3</sup>)
 
 2. 第二次尝试的算法核心部分
 
@@ -22,6 +24,8 @@ for a in range(0, 1001):
             print("a, b, c: %d, %d, %d" % (a, b, c))
 ```
 
-T(n) = O(n*n*(1+1)) = O(n*n) = O(n<sup>2</sup>)
+** 时间复杂度：**
+
+T(n) = O(n\*n\*(1+1)) = O(n\*n) = O(n<sup>2</sup>)
 
 **由此可见，我们尝试的第二种算法要比第一种算法的时间复杂度好多的。**

@@ -3,6 +3,7 @@
 
 ##希尔排序过程
 希尔排序的基本思想是：将数组列在一个表中并对列分别进行插入排序，重复这过程，不过每次用更长的列（步长更长了，列数更少了）来进行。最后整个表就只有一列了。将数组转换至表是为了更好地理解这算法，算法本身还是使用数组进行排序。
+
 例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样(竖着的元素是步长组成)：
 ```
 13 14 94 33 82
@@ -40,32 +41,31 @@
 ##希尔排序的分析
 ![shellsort](/images/shellsort.png)
 ```python
-def shellSort(alist):
-    sublistcount = len(alist)//2
-    #一共几次步长
-    while sublistcount > 0:
-      #for循环分别对每组进行插入排序
-      for startposition in range(sublistcount):
-        gapInsertionSort(alist,startposition,sublistcount)
-      print("After increments of size",sublistcount,
-                                   "The list is",alist)
-      #一次步长里的n个组排序结束，换步长
-      sublistcount = sublistcount // 2
-
-def gapInsertionSort(alist,start,gap):
-    #从每组的第二个元素开始，步长为gap
-    for i in range(start+gap,len(alist),gap):
-        currentvalue = alist[i]
-        position = i
-        while position>=gap and alist[position-gap]>currentvalue:
-            alist[position]=alist[position-gap]
-            position = position-gap
-        alist[position]=currentvalue
+def shell_sort(alist):
+    n = len(alist)
+    # 初始步长
+    gap = n / 2
+    while gap > 0:
+        # 按步长进行插入排序
+        for i in range(gap, n):
+            j = i
+            # 插入排序
+            while j>=gap and alist[j-gap] > alist[j]:
+                alist[j-gap], alist[j] = alist[j], alist[j-gap]
+                j -= gap
+        # 得到新的步长
+        gap = gap / 2
 
 alist = [54,26,93,17,77,31,44,55,20]
-shellSort(alist)
+shell_sort(alist)
 print(alist)
 ```
+
+## 时间复杂度
+
++ 最优时间复杂度：根据步长序列的不同而不同
++ 最坏时间复杂度：O(n<sup>2</sup>)
++ 稳定想：不稳定
 
 ##希尔排序演示
 ![shellsort](/images/shellsort.gif)

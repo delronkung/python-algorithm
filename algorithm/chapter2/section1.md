@@ -1,132 +1,14 @@
-# 单向链表
-链表中最简单的一种是单向链表，它包含两个域，一个信息域和一个指针域。这个链接指向列表中的下一个节点，而最后一个节点则指向一个空值。   
+# 顺序表的基本形式
 
-![单向链表图示](/images/单向链表图示.png)
-##操作
-travel() 遍历整个链表LinkList  
-isEmpty() 链表是否为空  
-size() 链表长度  
-add() 链表头部添加  
-append()  链表尾部添加  
-insert() 中间位置添加  
-remove() 删除节点   
-search() 查找节点是否存在  
-##实现
-```
-class SingleNode():
-    def __init__(self,item):
-        self._item=item
-        self._next=None
-    #获取节点的值
-    def getItem(self):
-        return self._item
-    #获取下一个指针
-    def getNext(self):
-        return self._next
-    #设置下一个节点
-    def setNext(self,newnext):
-        self._next=newnext
+![顺序表的形式](/images/顺序表的两种基本形式.png)
 
-class SingleLinkedList():  
-    #定义一个头单向链表的头指针
-    def __init__(self):
-        self._head=None
-    #判断链表是否为空
-    def isEmpty(self):
-        return self._head==None
+图a表示的是顺序表的基本形式，数据元素本身连续存储，每个元素所占的存储单元大小固定相同，元素的下标是其逻辑地址，而元素存储的物理地址（实际内存地址）可以通过存储区的起始地址Loc
+(e<sub>0</sub>)加上逻辑地址（第i个元素）与存储单元大小（c）的乘积计算而得，即：
 
-    #链表的长度
-    def size(self):
-        current=self._head
-        count=0
-        #当链表不为空
-        while current!=None:
-            count+=1
-            #将current后移一个节点
-            current=current.getNext()
-        return count
+** Loc(e<sub>i</sub>) = Loc(e<sub>0</sub>) + c\*i **
 
-    #遍历链表
-    def travel(self):
-        #将头节点赋给current
-        current=self._head
-        while current!=None:
-            #打印当前节点的值
-            print current.getItem()
-            current=current.getNext()
+故，访问指定元素时无需从头遍历，通过计算便可获得对应地址，其时间复杂度为O(1)。
 
-    #链表头部添加节点
-    def add(self,item):
-        #新建一个节点
-        temp=SingleNode(item)
-        #新节点的下一个节点为头指针指向的值
-        temp.setNext(self._head)
-        #将新节点设置为头指针指向的节点
-        self._head=temp
+如果元素的大小不统一，则须采用图b的元素外置的形式，将实际数据元素另行存储，而顺序表中各单元位置保存对应元素的地址信息（即链接）。由于每个链接所需的存储量相同，通过上述公式，可以计算出元素链接的存储位置，而后顺着链接找到实际存储的数据元素。**注意，图b中的c不再是数据元素的大小，而是存储一个链接地址所需的存储量，这个量通常很小。**
 
-    #链表尾部添加节点
-    def append(self,item):
-        temp=SingleNode(item)
-        if self.isEmpty():
-            self._head=temp
-        else:
-            current=self._head
-            #当前节点的下一个节点不为空
-            while current.getNext()!=None:
-                current=current.getNext()
-            #最后一个节点的下一个节点为要添加的节点
-            current.setNext(temp)
-
-    #链表查找节点是否存在，并返回True或者False
-    def search(self,item):
-        current=self._head
-        founditem=False
-        while current!=None and not founditem:
-            if current.getItem()==item:
-                founditem=True
-            else:
-                current=current.getNext()
-        return founditem           
-
-    #删除链表中的节点
-    def remove(self,item):
-        current=self._head
-        pre=None
-        while current!=None:
-            if current.getItem()==item:
-                #如果第一个就是删除的节点
-                if not pre:
-                    #将头指针指向头节点的后一个节点
-                    self._head=current.getNext()
-                else:
-                    #将要删除节点的前一个节点的指针指向该节点之后的一个节点
-                    pre.setNext(current.getNext())
-                break
-            else:
-                #就继续按链表后移节点
-                pre=current
-                current=current.getNext()     
-
-    #在指定位置插入节点
-    def insert(self,pos,item):
-        if pos<=1:
-            self.add(item)
-        elif pos>self.size():
-            self.append(item)
-        else:
-            temp=SingleNode(item)
-            count=1
-            #pre用于记录要插入pos位置之前的一个节点
-            pre=None
-            #从头指针指向的节点开始
-            current=self._head
-            #当前位置小于要插入的位置
-            while count<pos:
-                count+=1
-                pre=current
-                current=current.getNext()
-            #设置第pos-1个位置的下一个节点为temp
-            pre.setNext(temp)
-            #设置temp的下一个节点为pos+1个节点
-            temp.setNext(current)
-```
+图b这样的顺序表也被称为对实际数据的索引，这是最简单的索引结构。

@@ -1,61 +1,177 @@
-# 栈的应用
-###使用场景
-1.符号匹配  
-2.计算机表达式的转换  
-3.CPU内部栈主要是用来进行子程序调用和返回  
-4.进制转换  
-###1.括号匹配问题
-大多数计算机语言中都需要检测括号是否匹配，那么如何实现符号成对检测？  
+# 单向循环链表
 
-**算法思路**：
-* 从第一个字符开始扫描
-* 当遇见普通字符时忽略，
-* 当遇见左符号时压入栈中
-* 当遇见右符号时从栈中弹出栈顶符号，并进行匹配
-* 匹配成功：继续读入下一个字符
-* 匹配失败：立即停止，并报错
-* 结束：
-  成功: 所有字符扫描完毕，且栈为空
-  失败：匹配失败或所有字符扫描完毕但栈非空
+单链表的一个变形是单向循环链表，链表中最后一个节点的next域不再为None，而是指向链表的头节点。
+
+![单向循环链表](/images/单向循环链表.png)
+
+### 操作
+
++ is_empty() 判断链表是否为空
++ length()  返回链表的长度
++ travel() 遍历
++ add(item) 在头部添加一个节点
++ append(item) 在尾部添加一个节点
++ insert(pos, item) 在指定位置pos添加节点
++ remove(item)  删除一个节点
++ search(item)  查找节点是否存在
+
+### 实现
+
+```python
+class Node(object):
+    """节点"""
+    def __init__(self, item):
+        self.item = item
+        self.next = None
 
 
-###2.计算机表达式转换
-计算机的本质工作就是做数学运算，那计算机可以读入字符串
-"9 + (3 - 1) * 5 + 8 / 2"并计算值吗？
+class SinCycLinkedlist(object):
+    """单向循环链表"""
+    def __init__(self):
+        self._head = None
 
-**中缀表达式和后缀表达式**  
-后缀表达式（由波兰科学家在20世纪50年代提出）  
-将运算符放在数字后面 ===》 符合计算机运算  
-我们习惯的数学表达式叫做中缀表达式===》符合人类思考习惯  
-实例
+    def is_empty(self):
+        """判断链表是否为空"""
+        return self._head == None
+
+    def length(self):
+        """返回链表的长度"""
+        # 如果链表为空，返回长度0
+        if self.is_empty():
+            return 0
+        count = 1
+        cur = self._head
+        while cur.next != self._head:
+            count += 1
+            cur = cur.next
+        return count
+
+    def travel(self):
+        """遍历链表"""
+        if self.is_empty():
+            return
+        cur = self._head
+        print cur.item,
+        while cur.next != self._head:
+            cur = cur.next
+            print cur.item,
+        print ""
+
+
+    def add(self, item):
+        """头部添加节点"""
+        node = Node(item)
+        if self.is_empty():
+            self._head = node
+            node.next = self._head
+        else:
+            #添加的节点指向_head
+            node.next = self._head
+            # 移到链表尾部，将尾部节点的next指向node
+            cur = self._head
+            while cur.next != self._head:
+                cur = cur.next
+            cur.next = node
+            #_head指向添加node的
+            self._head = node
+
+    def append(self, item):
+        """尾部添加节点"""
+        node = Node(item)
+        if self.is_empty():
+            self._head = node
+            node.next = self._head
+        else:
+            # 移到链表尾部
+            cur = self._head
+            while cur.next != self._head:
+                cur = cur.next
+            # 将尾节点指向node
+            cur.next = node
+            # 将node指向头节点_head
+            node.next = self._head
+
+    def insert(self, pos, item):
+        """在指定位置添加节点"""
+        if pos <= 0:
+            self.add(item)
+        elif pos > (self.length()-1):
+            self.append(item)
+        else:
+            node = Node(item)
+            cur = self._head
+            count = 0
+            # 移动到指定位置的前一个位置
+            while count < (pos-1):
+                count += 1
+                cur = cur.next
+            node.next = cur.next
+            cur.next = node
+
+    def remove(self, item):
+        """删除一个节点"""
+        # 若链表为空，则直接返回
+        if self.is_empty():
+            return
+        # 将cur指向头节点
+        cur = self._head
+        pre = None
+        # 若头节点的元素就是要查找的元素item
+        if cur.item == item:
+            # 如果链表不止一个节点
+            if cur.next != self._head:
+                # 先找到尾节点，将尾节点的next指向第二个节点
+                while cur.next != self._head:
+                    cur = cur.next
+                # cur指向了尾节点
+                cur.next = self._head.next
+                self._head = self._head.next
+            else:
+                # 链表只有一个节点
+                self._head = None
+        else:
+            pre = self._head
+            # 第一个节点不是要删除的
+            while cur.next != self._head:
+                # 找到了要删除的元素
+                if cur.item == item:
+                    # 删除
+                    pre.next = cur.next
+                    return
+                else:
+                    pre = cur
+                    cur = cur.next
+            # cur 指向尾节点
+            if cur.item == item:
+                # 尾部删除
+                pre.next = cur.next
+
+    def search(self, item):
+        """查找节点是否存在"""
+        if self.is_empty():
+            return False
+        cur = self._head
+        if cur.item == item:
+            return True
+        while cur.next != self._head:
+            cur = cur.next
+            if cur.item == item:
+                return True
+        return False
+
+if __name__ == "__main__":
+    ll = SinCycLinkedlist()
+    ll.add(1)
+    ll.add(2)
+    ll.append(3)
+    ll.insert(2, 4)
+    ll.insert(4, 5)
+    ll.insert(0, 6)
+    print "length:",ll.length()
+    ll.travel()
+    print ll.search(3)
+    print ll.search(7)
+    ll.remove(1)
+    print "length:",ll.length()
+    ll.travel()
 ```
-5 + 4 => 5 4 +    
-1 + 2 * 3 => 1 2 3 * +    
-8 + ( 3 – 1 ) * 5 => 8 3 1 – 5 * +  
-```
-**算法思路**  
-中缀转后缀：
-遍历中缀表达式中的数字和符号
-* 对于数字：直接输出
-* 对于符号：  
-
-（1）左括号：进栈        
-（2）运算符号：与栈顶符号进行优先级比较    
-若栈顶符号优先级低：此符号进栈  
-（默认栈顶若是左括号，左括号优先级最低）
-若栈顶符号优先级不低：将栈顶符号弹出并输出，之后进栈
-（3）右括号：将栈顶符号弹出并输出，直到匹配左括号   
-* 遍历结束：将栈中的所有符号弹出并输出
-
-
-> **练习拓展：计算机如何基于后缀表达式结算结果**  
-> 例如：8 3 1 – 5 * +
-* 计算规则：  
-* 遍历后缀表达式中的数字和符号  
-* 对于数字：进栈  
-* 对于符号：  
-  （1）从栈中弹出右操作数
-  （2）从栈中弹出左操作数
-  根据符号进行运算
-  将运算结果压入栈中
-遍历结束：栈中的唯一数字为计算结果
