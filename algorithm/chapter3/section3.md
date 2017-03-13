@@ -1,34 +1,174 @@
-# 双端队列
-###操作
-* Deque() 创建一个空的双端队列
-* addFront(item) 从队头加入一个item元素
-* addRear(item) 从队尾加入一个item元素
-* removeFront() 从队头删除一个item元素
-* removeRear() 从队尾删除一个item元素
-* isEmpty() 判断双端队列是否为空
-* size() 返回队列的大小
-```
-class Deque:
+# 双向链表
+
+一种更复杂的链表是“双向链表”或“双面链表”。每个节点有两个链接：一个指向前一个节点，当此节点为第一个节点时，指向空值；而另一个指向下一个节点，当此节点为最后一个节点时，指向空值。
+
+![双向链表](/images/双向链表.png)
+
+## 操作
+
++ is_empty() 链表是否为空  
++ length() 链表长度
++ travel() 遍历链表
++ add(item) 链表头部添加  
++ append(item)  链表尾部添加  
++ insert(pos, item) 指定位置添加  
++ remove(item) 删除节点   
++ search(item) 查找节点是否存在  
+
+## 实现
+```python
+class Node(object):
+    """双向链表节点"""
+    def __init__(self, item):
+        self.item = item
+        self.next = None
+        self.prev = None
+
+
+class DLinkList(object):
+    """双向链表"""
     def __init__(self):
-        self.items = []
+        self._head = None
 
-    def isEmpty(self):
-        return self.items == []
+    def is_empty(self):
+        """判断链表是否为空"""
+        return self._head == None
 
-    def addFront(self, item):
-        self.items.append(item)
+    def length(self):
+        """返回链表的长度"""
+        cur = self._head
+        count = 0
+        while cur != None:
+            count += 1
+            cur = cur.next
+        return count
 
-    def addRear(self, item):
-        self.items.insert(0,item)
+    def travel(self):
+        """遍历链表"""
+        cur = self._head
+        while cur != None:
+            print cur.item,
+            cur = cur.next
+        print ""
 
-    def removeFront(self):
-        return self.items.pop()
+    def add(self, item):
+        """头部插入元素"""
+        node = Node(item)
+        if self.is_empty():
+            # 如果是空链表，将_head指向node
+            self._head = node
+        else:
+            # 将node的next指向_head的头节点
+            node.next = self._head
+            # 将_head的头节点的prev指向node
+            self._head.prev = node
+            # 将_head 指向node
+            self._head = node
 
-    def removeRear(self):
-        return self.items.pop(0)
+    def append(self, item):
+        """尾部插入元素"""
+        node = Node(item)
+        if self.is_empty():
+            # 如果是空链表，将_head指向node
+            self._head = node
+        else:
+            # 移动到链表尾部
+            cur = self._head
+            while cur.next != None:
+                cur = cur.next
+            # 将尾节点cur的next指向node
+            cur.next = node
+            # 将node的prev指向cur
+            node.prev = cur
 
-    def size(self):
-        return len(self.items)
+
+
+    def search(self, item):
+        """查找元素是否存在"""
+        cur = self._head
+        while cur != None:
+            if cur.item == item:
+                return True
+            cur = cur.next
+        return False
 ```
-###双端队列应用
-一个有趣的问题，可以很容易地解决了使用队列的数据结构是典型的回文问题。回文数是一个字符串，读取相同的向前和向后的，例如,"sbbs"我们想构造一个算法，输入一个字符串是否回文。这个问题的解决方案将使用一个队列来存储字符串的字符。我们将从左到右弦和添加的每个字符的双端队列后。在这一点上，deque将会表现的非常像一个普通的队列。然而，我们现在可以利用该容器的双重功能。该容器前将字符串和该容器后的第一个字符将举行的最后一个字符
+
+** 指定位置插入节点 **
+
+![双向链表指定位置插入元素](/images/双向链表指定位置插入元素.png)
+
+```python
+    def insert(self, pos, item):
+        """在指定位置添加节点"""
+        if pos <= 0:
+            self.add(item)
+        elif pos > (self.length()-1):
+            self.append(item)
+        else:
+            node = Node(item)
+            cur = self._head
+            count = 0
+            # 移动到指定位置的前一个位置
+            while count < (pos-1):
+                count += 1
+                cur = cur.next
+            # 将node的prev指向cur
+            node.prev = cur
+            # 将node的next指向cur的下一个节点
+            node.next = cur.next
+            # 将cur的下一个节点的prev指向node
+            cur.next.prev = node
+            # 将cur的next指向node
+            cur.next = node
+```
+** 删除元素 **
+
+![双向链表删除节点](/images/双向链表删除节点.png)
+
+```python
+    def remove(self, item):
+        """删除元素"""
+        if self.is_empty():
+            return
+        else:
+            cur = self._head
+            if cur.item == item:
+                # 如果首节点的元素即是要删除的元素
+                if cur.next == None:
+                    # 如果链表只有这一个节点
+                    self._head = None
+                else:
+                    # 将第二个节点的prev设置为None
+                    cur.next.prev = None
+                    # 将_head指向第二个节点
+                    self._head = cur.next
+                return
+            while cur != None:
+                if cur.item == item:
+                    # 将cur的前一个节点的next指向cur的后一个节点
+                    cur.prev.next = cur.next
+                    # 将cur的后一个节点的prev指向cur的前一个节点
+                    cur.next.prev = cur.prev
+                    break
+                cur = cur.next
+```
+
+** 测试 **
+
+```python
+if __name__ == "__main__":
+    ll = DLinkList()
+    ll.add(1)
+    ll.add(2)
+    ll.append(3)
+    ll.insert(2, 4)
+    ll.insert(4, 5)
+    ll.insert(0, 6)
+    print "length:",ll.length()
+    ll.travel()
+    print ll.search(3)
+    print ll.search(4)
+    ll.remove(1)
+    print "length:",ll.length()
+    ll.travel()
+```

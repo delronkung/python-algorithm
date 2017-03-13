@@ -1,13 +1,177 @@
-# 队列的应用
-1.windows中的消息机制就是通过队列来实现的  
-2.操作系统的进程、作业管理中的先进先出服务  
-3.异步消息机制，如celery异步任务  
-###约瑟夫斯问题（热土豆游戏）
-这场比赛是一个现代的相当著名的约瑟夫斯问题。基于对第一世纪著名历史学家Flavius Josephus的传说，故事说的是，在对罗马犹太人起义，约瑟夫斯和39名战友顶住了罗马人在一个山洞里。随着失败迫在眉睫，他们决定，他们宁愿死也不愿做罗马人的奴隶。他们安排自己在一个圆圈里。一个人被划为第一号，顺时针方向，每第七个男人就杀了一个。约瑟夫斯，根据传说，是一个有成就的数学家。他立刻想出了他应该坐的地方是最后一个去的地方。当时间来了，而不是杀死自己，他加入了罗马的一边。
+# 单向循环链表
+
+单链表的一个变形是单向循环链表，链表中最后一个节点的next域不再为None，而是指向链表的头节点。
+
+![单向循环链表](/images/单向循环链表.png)
+
+### 操作
+
++ is_empty() 判断链表是否为空
++ length()  返回链表的长度
++ travel() 遍历
++ add(item) 在头部添加一个节点
++ append(item) 在尾部添加一个节点
++ insert(pos, item) 在指定位置pos添加节点
++ remove(item)  删除一个节点
++ search(item)  查找节点是否存在
+
+### 实现
+
+```python
+class Node(object):
+    """节点"""
+    def __init__(self, item):
+        self.item = item
+        self.next = None
 
 
+class SinCycLinkedlist(object):
+    """单向循环链表"""
+    def __init__(self):
+        self._head = None
 
-###打印机任务（拓展不要求会）
-图书馆中有一台打印机，打印机有两种工作模式：每分钟10页（但打印质量较低），每分钟5页（打印效果较好）。打印机一次只能处理一个任务，其余任务可排队等候。
-每个小时最多有10位学生在图书馆，他们在一小时终最多提交2次打印任务，每个打印任务的页数为1至20页不等。
-问：综合分析两种打印模式，分析学生的平均等待打印时间和是否能在1小时内完成所有学生提交的打印任务
+    def is_empty(self):
+        """判断链表是否为空"""
+        return self._head == None
+
+    def length(self):
+        """返回链表的长度"""
+        # 如果链表为空，返回长度0
+        if self.is_empty():
+            return 0
+        count = 1
+        cur = self._head
+        while cur.next != self._head:
+            count += 1
+            cur = cur.next
+        return count
+
+    def travel(self):
+        """遍历链表"""
+        if self.is_empty():
+            return
+        cur = self._head
+        print cur.item,
+        while cur.next != self._head:
+            cur = cur.next
+            print cur.item,
+        print ""
+
+
+    def add(self, item):
+        """头部添加节点"""
+        node = Node(item)
+        if self.is_empty():
+            self._head = node
+            node.next = self._head
+        else:
+            #添加的节点指向_head
+            node.next = self._head
+            # 移到链表尾部，将尾部节点的next指向node
+            cur = self._head
+            while cur.next != self._head:
+                cur = cur.next
+            cur.next = node
+            #_head指向添加node的
+            self._head = node
+
+    def append(self, item):
+        """尾部添加节点"""
+        node = Node(item)
+        if self.is_empty():
+            self._head = node
+            node.next = self._head
+        else:
+            # 移到链表尾部
+            cur = self._head
+            while cur.next != self._head:
+                cur = cur.next
+            # 将尾节点指向node
+            cur.next = node
+            # 将node指向头节点_head
+            node.next = self._head
+
+    def insert(self, pos, item):
+        """在指定位置添加节点"""
+        if pos <= 0:
+            self.add(item)
+        elif pos > (self.length()-1):
+            self.append(item)
+        else:
+            node = Node(item)
+            cur = self._head
+            count = 0
+            # 移动到指定位置的前一个位置
+            while count < (pos-1):
+                count += 1
+                cur = cur.next
+            node.next = cur.next
+            cur.next = node
+
+    def remove(self, item):
+        """删除一个节点"""
+        # 若链表为空，则直接返回
+        if self.is_empty():
+            return
+        # 将cur指向头节点
+        cur = self._head
+        pre = None
+        # 若头节点的元素就是要查找的元素item
+        if cur.item == item:
+            # 如果链表不止一个节点
+            if cur.next != self._head:
+                # 先找到尾节点，将尾节点的next指向第二个节点
+                while cur.next != self._head:
+                    cur = cur.next
+                # cur指向了尾节点
+                cur.next = self._head.next
+                self._head = self._head.next
+            else:
+                # 链表只有一个节点
+                self._head = None
+        else:
+            pre = self._head
+            # 第一个节点不是要删除的
+            while cur.next != self._head:
+                # 找到了要删除的元素
+                if cur.item == item:
+                    # 删除
+                    pre.next = cur.next
+                    return
+                else:
+                    pre = cur
+                    cur = cur.next
+            # cur 指向尾节点
+            if cur.item == item:
+                # 尾部删除
+                pre.next = cur.next
+
+    def search(self, item):
+        """查找节点是否存在"""
+        if self.is_empty():
+            return False
+        cur = self._head
+        if cur.item == item:
+            return True
+        while cur.next != self._head:
+            cur = cur.next
+            if cur.item == item:
+                return True
+        return False
+
+if __name__ == "__main__":
+    ll = SinCycLinkedlist()
+    ll.add(1)
+    ll.add(2)
+    ll.append(3)
+    ll.insert(2, 4)
+    ll.insert(4, 5)
+    ll.insert(0, 6)
+    print "length:",ll.length()
+    ll.travel()
+    print ll.search(3)
+    print ll.search(7)
+    ll.remove(1)
+    print "length:",ll.length()
+    ll.travel()
+```

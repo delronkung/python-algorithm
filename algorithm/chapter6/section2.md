@@ -1,79 +1,41 @@
-# 二叉树的遍历
-树的遍历是树的一种重要的运算。所谓遍历是指对树中所有结点的信息的访问，即依次对树中每个结点访问一次且仅访问一次，我们把这种对所有节点的访问称为遍历（traversal）。那么树的两种重要的遍历模式是深度优先遍历和广度优先遍历,**深度优先一般用递归，广度优先一般用队列。一般情况下能用递归实现的算法大部分也能用堆栈来实现。**
+# 选择排序
 
-##深度优先遍历
-对于一颗二叉树，深度优先搜索(Depth First Search)是沿着树的深度遍历树的节点，尽可能深的搜索树的分支。  
-那么深度遍历有重要的三种方法。这三种方式常被用于访问树的节点，它们之间的不同在于访问每个节点的次序不同。这三种遍历分别叫做先序遍历（preorder），中序遍历（inorder）和后序遍历（postorder）。我们来给出它们的详细定义，然后举例看看它们的应用。
-* 先序遍历 
-在先序遍历中，我们先访问根节点，然后递归使用先序遍历访问左子树，再递归使用先序遍历访问右子树  
-根节点->左子树->右子树
+选择排序（Selection sort）是一种简单直观的排序算法。它的工作原理如下。首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。
+
+选择排序的主要优点与数据移动有关。如果某个元素位于正确的最终位置上，则它不会被移动。选择排序每次交换一对元素，它们当中至少有一个将被移到其最终位置上，因此对n个元素的表进行排序总共进行至多n-1次交换。在所有的完全依靠交换去移动元素的排序方法中，选择排序属于非常好的一种。
+
+## 选择排序分析
+
+排序过程：
+
+![selectionsort](/images/selectionsort.jpg)  
+
+![Selection-Sort-Animation](/images/Selection-Sort-Animation.gif)
+红色表示当前最小值，黄色表示已排序序列，蓝色表示当前位置。
+
 ```python
-def front(self, root):
-        """递归实现先序遍历"""
-        if root == None:
-            return
-        print root.elem
-        self.front(root.lchild)
-        self.front(root.rchild)
+def selection_sort(alist):
+    n = len(alist)
+    # 需要进行n-1次选择操作
+    for i in range(n-1):
+        # 记录最小位置
+        min_index = i
+        # 从i+1位置到末尾选择出最小数据
+        for j in range(i+1, n):
+            if alist[j] < alist[min_index]:
+                min_index = j
+        # 如果选择出的数据不在正确位置，进行交换
+        if min_index != i:
+            alist[i], alist[min_index] = alist[min_index], alist[i]
+
+alist = [54,226,93,17,77,31,44,55,20]
+selection_sort(alist)
+print(alist)
 ```
+## 时间复杂度
++ 最优时间复杂度：O(n<sup>2</sup>)
++ 最坏时间复杂度：O(n<sup>2</sup>)
++ 稳定性：不稳定（考虑升序每次选择最大的情况）
 
-
-* 中序遍历 
-在中序遍历中，我们递归使用中序遍历访问左子树，然后访问根节点，最后再递归使用中序遍历访问右子树  
-左子树->根节点->右子树
-```python
- def middle(self, root):
-        """递归实现中序遍历"""
-        if root == None:
-            return
-        self.middle(root.lchild)
-        print root.elem
-        self.middle(root.rchild)
-```
-
-
-
-* 后序遍历 
-在后序遍历中，我们先递归使用后序遍历访问左子树和右子树，最后访问根节点  
-左子树->右子树->根节点
-```python
-def later(self, root):
-        """递归实现后续遍历"""
-        if root == None:
-            return
-        self.later(root.lchild)
-        self.later(root.rchild)
-        print root.elem
-```
-![三种遍历结果](/images/三种遍历结果.jpg)
-
-> 课堂练习：
-按照如图树的结构写出三种遍历的顺序:    
-![树练习](/images/树练习.png)  
-结果：  
-先序:a b c  d e f g h  
-中序:b d c e a  f h g  
-后序:d e c b h g f a  
-**思考：**哪两种遍历方式能够唯一的确定一颗树？？？
-
-
-##广度优先遍历(层次遍历)
-从树的root开始，从上到下从从左到右遍历整个树的节点
-```python
-def level_queue(self, root):
-        """利用队列实现树的层次遍历"""
-        if root == None:
-            return
-        myQueue = []
-        node = root
-        myQueue.append(node)
-        while myQueue:
-            node = myQueue.pop(0)
-            print node.elem,
-            if node.lchild != None:
-                myQueue.append(node.lchild)
-            if node.rchild != None:
-                myQueue.append(node.rchild)
-```
-
-###课后练习：自己实现求出树的深度？
+## 选择排序演示
+![selection](/images/selection.gif)

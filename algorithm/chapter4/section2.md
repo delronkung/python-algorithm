@@ -1,69 +1,61 @@
-# 单项循环链表
-在一个 循环链表中, 首节点和末节点被连接在一起。这种方式在单向和双向链表中皆可实现。要转换一个循环链表，你开始于任意一个节点然后沿着列表的任一方向直到返回开始的节点。再来看另一种方法，循环链表可以被视为“无头无尾”,可以解决约瑟夫问题
-##操作
-add() 添加一个节点
-remove()  删除一个节点
-search()  查找节点是否存在
-size()  返回链表的长度
-empty() 判断链表是否为空
-##实现
+# 栈的应用
+###使用场景
+1.符号匹配  
+2.计算机表达式的转换  
+3.CPU内部栈主要是用来进行子程序调用和返回  
+4.进制转换  
+###1.括号匹配问题
+大多数计算机语言中都需要检测括号是否匹配，那么如何实现符号成对检测？  
+
+**算法思路**：
+* 从第一个字符开始扫描
+* 当遇见普通字符时忽略，
+* 当遇见左符号时压入栈中
+* 当遇见右符号时从栈中弹出栈顶符号，并进行匹配
+* 匹配成功：继续读入下一个字符
+* 匹配失败：立即停止，并报错
+* 结束：
+  成功: 所有字符扫描完毕，且栈为空
+  失败：匹配失败或所有字符扫描完毕但栈非空
+
+
+###2.计算机表达式转换
+计算机的本质工作就是做数学运算，那计算机可以读入字符串
+"9 + (3 - 1) * 5 + 8 / 2"并计算值吗？
+
+**中缀表达式和后缀表达式**  
+后缀表达式（由波兰科学家在20世纪50年代提出）  
+将运算符放在数字后面 ===》 符合计算机运算  
+我们习惯的数学表达式叫做中缀表达式===》符合人类思考习惯  
+实例
 ```
-class Node:
-    def __init__(self, initdata):
-        self.__data = initdata
-        self.__next = None
-    def getData(self):
-        return self.__data
-    def getNext(self):
-        return self.__next
-    def setData(self, newdata):
-        self.__data = newdata
-    def setNext(self, lnode):
-        self.__next = lnode
-
-
-class SinCycLinkedlist:
-    def __init__(self):
-        self._head = Node(None)
-        #让第一个节点自己指向自己
-        self._head.setNext(self._head)
-
-    #添加一个节点
-    def add(self, item):
-        temp = Node(item)
-        #添加的节点指向_head
-        temp.setNext(self._head.getNext())
-        #_head指向添加的temp节点
-        self._head.setNext(temp)
-
-    #删除一个节点
-    def remove(self, item):
-        prev = self._head
-        while prev.getNext() != self._head:
-            cur = prev.getNext()
-            if cur.getData() == item:
-                prev.setNext(cur.getNext())
-            prev = prev.getNext()
-
-    #查找节点是否存在
-    def search(self, item):
-        cur = self._head.getNext()
-        while cur != self._head:
-            if cur.getData() == item:
-                return True
-            cur = cur.getNext()
-        return False
-
-    #清空链表
-    def empty(self):
-        return self._head.getNext() == self._head
-
-    #求出链表的大小
-    def size(self):
-        count = 0
-        cur = self._head.getNext()
-        while cur != self._head:
-            count += 1
-            cur = cur.getNext()
-        return count
+5 + 4 => 5 4 +    
+1 + 2 * 3 => 1 2 3 * +    
+8 + ( 3 – 1 ) * 5 => 8 3 1 – 5 * +  
 ```
+**算法思路**  
+中缀转后缀：
+遍历中缀表达式中的数字和符号
+* 对于数字：直接输出
+* 对于符号：  
+
+（1）左括号：进栈        
+（2）运算符号：与栈顶符号进行优先级比较    
+若栈顶符号优先级低：此符号进栈  
+（默认栈顶若是左括号，左括号优先级最低）
+若栈顶符号优先级不低：将栈顶符号弹出并输出，之后进栈
+（3）右括号：将栈顶符号弹出并输出，直到匹配左括号   
+* 遍历结束：将栈中的所有符号弹出并输出
+
+
+> **练习拓展：计算机如何基于后缀表达式结算结果**  
+> 例如：8 3 1 – 5 * +
+* 计算规则：  
+* 遍历后缀表达式中的数字和符号  
+* 对于数字：进栈  
+* 对于符号：  
+  （1）从栈中弹出右操作数
+  （2）从栈中弹出左操作数
+  根据符号进行运算
+  将运算结果压入栈中
+遍历结束：栈中的唯一数字为计算结果

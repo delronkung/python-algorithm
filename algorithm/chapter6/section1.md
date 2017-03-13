@@ -1,64 +1,42 @@
-# 二叉树
+# 冒泡排序
 
-##思考：
-具有3个结点的二叉树可能有几种不同形态？
+**冒泡排序**（英语：Bubble Sort）是一种简单的排序算法。它重复地遍历要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。遍历数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为越小的元素会经由交换慢慢“浮”到数列的顶端。
 
-##二叉树的基本概念
-叉树是每个节点最多有两个子树的树结构。通常子树被称作“左子树”（left subtree）和“右子树”（right subtree）  
+冒泡排序算法的运作如下：
++ 比较相邻的元素。如果第一个比第二个大（升序），就交换他们两个。
++ 对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
++ 针对所有的元素重复以上的步骤，除了最后一个。
++ 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
 
+## 冒泡排序的分析
 
-##二叉树的性质(特性)
-**性质1:** 在二叉树的第i层上至多有2^(i-1)个结点（i>0）  
-**性质2:** 深度为k的二叉树至多有2^k - 1个结点（k>0）  
-**性质3:** 对于任意一棵二叉树，如果其叶结点数为N0，而度数为2的结点总数为N2，则N0=N2+1;  
-**性质4:**具有n个结点的完全二叉树的深度必为 log2(n+1)   
-**性质5:**对完全二叉树，若从上至下、从左至右编号，则编号为i 的结点，其左孩子编号必为2i，其右孩子编号必为2i＋1；其双亲的编号必为i/2（i＝1 时为根,除外）
-  
-> (1)完全二叉树——若设二叉树的高度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第h层有叶子结点，并且叶子结点都是从左到右依次排布，这就是完全二叉树。  
-![完全二叉树](/images/完全二叉树.png)
+交换过程图示(第一次)：     
 
-(2)满二叉树——除了叶结点外每一个结点都有左右子叶且叶子结点都处在最底层的二叉树。  
-![满二叉树](/images/满二叉树.png)
+![bubblesort](/images/bubblesort.jpg)  
 
-##二叉树的节点表示以及树的创建
-通过使用Node类中定义三个属性，分别为elem本身的值，还有lchild左孩子和rchild右孩子
+那么我们需要进行n-1次冒泡过程，每次对应的比较次数如下图所示：  
+
+![compare](/images/compare.bmp)
+
 ```python
-class Node(object):
-    """节点类"""
-    def __init__(self, elem=-1, lchild=None, rchild=None):
-        self.elem = elem
-        self.lchild = lchild
-        self.rchild = rchild
-```
-树的创建,创建一个树的类，并给一个root根节点，一开始为空，随后添加节点
-```python
-class Tree(object):
-    """树类"""
-    def __init__(self):
-        self.root = Node()
+def bubble_sort(alist):
+    for j in range(len(alist)-1,0,-1):
+        # j表示每次遍历需要比较的次数，是逐渐减小的
+        for i in range(j):
+            if alist[i] > alist[i+1]:
+                alist[i], alist[i+1] = alist[i+1], alist[i]
 
-    def add(self, elem):
-        """为树添加节点"""
-        node = Node(elem)
-        #如果树是空的，则对根节点赋值
-        if self.root.elem == -1:
-            self.root = node
-        else:
-            myQueue = []
-            treeNode = self.root
-            myQueue.append(treeNode)
-            #对已有的节点进行层次遍历
-            while myQueue:
-                #弹出队列的第一个元素
-                treeNode = myQueue.pop(0)
-                if treeNode.lchild == None:
-                    treeNode.lchild = node
-                    return
-                elif treeNode.rchild == None:
-                    treeNode.rchild = node
-                    return
-                else:
-                    #如果左右子树都不为空，加入队列继续判断
-                    myQueue.append(treeNode.lchild)
-                    myQueue.append(treeNode.rchild)
+li = [54,26,93,17,77,31,44,55,20]
+bubble_sort(li)
+print(li)
 ```
+## 时间复杂度
+
++ 最优时间复杂度：O(n)  （表示遍历一次发现没有任何可以交换的元素，排序结束。）
++ 最坏时间复杂度：O(n<sup>2</sup>)
++ 稳定性：稳定
+
+## 冒泡排序的演示
+
+效果：   
+![bubble](/images/bubble.gif)
