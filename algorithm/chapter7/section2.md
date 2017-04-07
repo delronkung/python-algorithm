@@ -54,13 +54,15 @@ def postorder(self, root):
 先序:a b c  d e f g h  
 中序:b d c e a  f h g  
 后序:d e c b h g f a  
-**思考：**哪两种遍历方式能够唯一的确定一颗树？？？
 
+**思考：** 哪两种遍历方式能够唯一的确定一颗树？？？
 
 ##广度优先遍历(层次遍历)
+
 从树的root开始，从上到下从从左到右遍历整个树的节点
+
 ```python
-def breadth_travel(self, root):
+def breadth_travel(self):
         """利用队列实现树的层次遍历"""
         if root == None:
             return

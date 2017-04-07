@@ -65,7 +65,7 @@ print(alist)
 
 + 最优时间复杂度：根据步长序列的不同而不同
 + 最坏时间复杂度：O(n<sup>2</sup>)
-+ 稳定想：不稳定
++ 稳定性：不稳定
 
 ##希尔排序演示
 ![shellsort](/images/shellsort.gif)
